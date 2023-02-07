@@ -58,7 +58,7 @@ function categoryPage() {
   headerSection.style.background = "";
 
   arrowBtn.classList.remove("inactive");
-  arrowBtn.classList.add("header-arrow--white");
+  arrowBtn.classList.remove("header-arrow--white");
   headerTitle.classList.add("inactive");
   headerCategoryTitle.classList.remove("inactive");
   searchForm.classList.add("inactive");
@@ -68,6 +68,13 @@ function categoryPage() {
 
   genericSection.classList.remove("inactive");
   movieDetailSection.classList.add("inactive");
+
+  //['#category', 'id-name']
+  const [_, categoryData] = location.hash.split("=");
+  const [categoryId, categoryName] = categoryData.split("-");
+
+  headerCategoryTitle.innerHTML = categoryName;
+  getMoviesByCategory(categoryId);
 }
 function movieDetailPage() {
   console.log("detail ");

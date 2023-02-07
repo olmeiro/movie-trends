@@ -2,25 +2,19 @@
  * axios instance
  */
 const api = axios.create({
-  baseURL: 'https://api.themoviedb.org/3/',
+  baseURL: "https://api.themoviedb.org/3/",
   headers: {
-    'Content-Type': 'application/json;charset=utf-8',
+    "Content-Type": "application/json;charset=utf-8",
   },
   params: {
-    'api_key': API_KEY,
-    "language": "es-ES"
+    api_key: API_KEY,
+    language: "es-ES",
   },
 });
 
-/**
- * trending
- * https://developers.themoviedb.org/3/trending/get-trending
- */
-async function getTrendingMoviesPreview() {
-  const { data } = await api('trending/movie/day');
-  const movies = data.results;
-
-  trendingMoviesPreviewList.innerHTML = '';
+//Utils o helpers:
+function createMovies(movies, container) {
+  container.innerHTML = "";
 
   movies.forEach((movie) => {
     const movieContainer = document.createElement("div");
@@ -35,22 +29,12 @@ async function getTrendingMoviesPreview() {
     );
 
     movieContainer.appendChild(movieImg);
-    trendingMoviesPreviewList.appendChild(movieContainer);
+    container.appendChild(movieContainer);
   });
 }
 
-/**
- * Categories
- * https://developers.themoviedb.org/3/genres/get-movie-list
- */
-async function getPreviewsCategories() {
-  const { data } = await api(
-    "genre/movie/list"
-  );
-
-  const categories = data.genres;
-
-  categoriesPreviewList.innerHTML = '';
+function createCategories(categories, container) {
+  container.innerHTML = "";
 
   categories.forEach((categorie) => {
     const categoryContainer = document.createElement("div");
@@ -58,11 +42,44 @@ async function getPreviewsCategories() {
 
     const categoryTitle = document.createElement("h3");
     categoryTitle.classList.add("category-title");
-    categoryTitle.setAttribute('id', 'id' + categorie.id)
-    const categoryTitleText = document.createTextNode(categorie.name)
+    categoryTitle.setAttribute("id", "id" + categorie.id);
 
-    categoryTitle.appendChild(categoryTitleText)
+    categoryTitle.addEventListener("click", () => {
+      location.hash = `#category=${categorie.id}-${categorie.name}`;
+    });
+    const categoryTitleText = document.createTextNode(categorie.name);
+
+    categoryTitle.appendChild(categoryTitleText);
     categoryContainer.appendChild(categoryTitle);
-    categoriesPreviewList.appendChild(categoryContainer);
+    container.appendChild(categoryContainer);
   });
+}
+
+/**
+ * trending
+ * https://developers.themoviedb.org/3/trending/get-trending
+ */
+async function getTrendingMoviesPreview() {
+  const { data } = await api("trending/movie/day");
+  const movies = data.results;
+  createMovies(movies, trendingMoviesPreviewList);
+}
+
+/**
+ * Categories
+ * https://developers.themoviedb.org/3/genres/get-movie-list
+ */
+async function getPreviewsCategories() {
+  const { data } = await api("genre/movie/list");
+  const categories = data.genres;
+  createCategories(categories, categoriesPreviewList);
+}
+
+async function getMoviesByCategory(id) {
+  const { data } = await api("discover/movie", {
+    with_genres: id,
+  });
+  const movies = data.results;
+  createMovies(movies, genericSection);
+  genericSection.scrollTo({ top: 0 });
 }
