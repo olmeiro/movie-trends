@@ -81,5 +81,4 @@ async function getMoviesByCategory(id) {
   });
   const movies = data.results;
   createMovies(movies, genericSection);
-  genericSection.scrollTo({ top: 0 });
 }

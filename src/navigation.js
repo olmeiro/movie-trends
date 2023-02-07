@@ -13,6 +13,14 @@ arrowBtn.addEventListener("click", () => {
   location.hash = "#home";
 });
 
+function smoothscroll() {
+  const currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
+  if (currentScroll > 0) {
+    window.requestAnimationFrame(smoothscroll);
+    window.scrollTo(0, currentScroll - (currentScroll / 5));
+  }
+};
+
 function navigator() {
   console.log({ location });
 
@@ -27,6 +35,15 @@ function navigator() {
   } else {
     homePage();
   }
+  // document.body.scrollTop = 0;
+  // document.documentElement.scrollTop = 0; //safari
+  // window.scrollTo(0, 0);
+  // smoothscroll(); //con animación
+
+  window.scroll({
+    top: 0,
+    behavior: 'smooth'
+  });
 }
 
 function homePage() {
@@ -73,7 +90,7 @@ function categoryPage() {
   const [_, categoryData] = location.hash.split("=");
   const [categoryId, categoryName] = categoryData.split("-");
 
-  headerCategoryTitle.innerHTML = categoryName;
+  headerCategoryTitle.innerHTML = decodeURIComponent(categoryName);
   getMoviesByCategory(categoryId);
 }
 function movieDetailPage() {
