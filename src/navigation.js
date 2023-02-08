@@ -11,9 +11,12 @@ window.addEventListener(
   false
 );
 
-searchFormBtn.addEventListener("click", () => {
-  location.hash = "#search=" + searchFormInput.value; //grab input
-});
+// searchFormBtn.addEventListener("click", () => {
+//   location.hash = "#search=" + searchFormInput.value; //grab input
+// });
+
+searchFormBtn.addEventListener('click',
+  e => searchFormInput.value !== "" ? location.hash = 'search=' + searchFormInput.value : e.preventDefault())
 
 trendingBtn.addEventListener("click", () => {
   location.hash = "#trends";
@@ -128,6 +131,9 @@ function movieDetailPage() {
 
   genericSection.classList.add("inactive");
   movieDetailSection.classList.remove("inactive");
+
+  const [_, movieId] = location.hash.split('=');
+  getMovieById(movieId);
 }
 function searchPage() {
   console.log("search");
