@@ -77,8 +77,32 @@ async function getPreviewsCategories() {
 
 async function getMoviesByCategory(id) {
   const { data } = await api("discover/movie", {
-    with_genres: id,
+    params: {
+      with_genres: id,
+    }
   });
   const movies = data.results;
   createMovies(movies, genericSection);
 }
+
+async function getMoviesBySearch(query) {
+  const { data } = await api("search/movie", {
+    params: {
+      query
+    }
+  });
+  const movies = data.results;
+  createMovies(movies, genericSection);
+}
+
+async function getTrendingMovies(query) {
+  const { data } = await api("trending/movie/day", {
+    params: {
+      query
+    }
+  });
+  const movies = data.results;
+  createMovies(movies, genericSection);
+}
+
+
