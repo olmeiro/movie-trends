@@ -20,8 +20,9 @@ const lazyLoader = new IntersectionObserver((entries) => {
     // console.log(entry)
     if (entry.isIntersecting) {
       const url = entry.target.getAttribute('data-img')
+      // console.log(entry.target)
       entry.target.setAttribute('src', url)
-      lazyLoader.unobserve(image.target)
+      // lazyLoader.unobserve(image.target)
     }
   })
 })
@@ -43,6 +44,13 @@ function createMovies(movies, container, lazyLoad = false) {
       lazyLoad ? "data-img" : 'src',
       `https://image.tmdb.org/t/p/w300/${movie.poster_path}`
     );
+
+    movieImg.addEventListener('error', () => {
+      movieImg.setAttribute(
+        'src',
+        'https://static.platzi.com/static/images/error/img404.png',
+      );
+    })
     //lazyloader:
     if (lazyLoad) { lazyLoader.observe(movieImg) }
 
@@ -100,7 +108,7 @@ async function getMoviesByCategory(id) {
     },
   });
   const movies = data.results;
-  createMovies(movies, genericSection);
+  createMovies(movies, genericSection, true);
 }
 
 async function getMoviesBySearch(query) {
