@@ -27,8 +27,10 @@ const lazyLoader = new IntersectionObserver((entries) => {
   })
 })
 
-function createMovies(movies, container, lazyLoad = false) {
-  container.innerHTML = "";
+function createMovies(movies, container, { lazyLoad = false, clean = true } = {}) {
+  if (clean) {
+    container.innerHTML = "";
+  }
 
   movies.forEach((movie) => {
     const movieContainer = document.createElement("div");
@@ -41,18 +43,20 @@ function createMovies(movies, container, lazyLoad = false) {
     movieImg.classList.add("movie-img");
     movieImg.setAttribute("alt", movie.title);
     movieImg.setAttribute(
-      lazyLoad ? "data-img" : 'src',
+      lazyLoad ? "data-img" : "src",
       `https://image.tmdb.org/t/p/w300/${movie.poster_path}`
     );
 
-    movieImg.addEventListener('error', () => {
+    movieImg.addEventListener("error", () => {
       movieImg.setAttribute(
-        'src',
-        'https://static.platzi.com/static/images/error/img404.png',
+        "src",
+        "https://static.platzi.com/static/images/error/img404.png"
       );
-    })
+    });
     //lazyloader:
-    if (lazyLoad) { lazyLoader.observe(movieImg) }
+    if (lazyLoad) {
+      lazyLoader.observe(movieImg);
+    }
 
     movieContainer.appendChild(movieImg);
     container.appendChild(movieContainer);
@@ -128,7 +132,36 @@ async function getTrendingMovies(query) {
     },
   });
   const movies = data.results;
-  createMovies(movies, genericSection);
+  createMovies(movies, genericSection, { lazyLoad: true, clean: true });
+
+  const btnLoadMore = document.createElement('button');
+  btnLoadMore.innerText = 'Cargar más';
+  btnLoadMore.setAttribute('id', 'btn-load-more');
+  btnLoadMore.addEventListener('click', getPaginateTrendingMovies)
+  genericSection.appendChild(btnLoadMore);
+}
+
+let page = 1;
+async function getPaginateTrendingMovies() {
+  page++;
+
+  const { data } = await api("trending/movie/day", {
+    params: {
+      page,
+    },
+  });
+  const movies = data.results;
+  createMovies(movies, genericSection, { lazyLoad: true, clean: false });
+
+  const btnLoadMoreExist = document.querySelector('#btn-load-more');
+  genericSection.removeChild(btnLoadMoreExist);
+
+  const btnLoadMore = document.createElement('button');
+  btnLoadMore.innerText = 'Cargar más';
+  btnLoadMore.setAttribute('id', 'btn-load-more');
+
+  btnLoadMore.addEventListener('click', getPaginateTrendingMovies)
+  genericSection.appendChild(btnLoadMore);
 }
 
 /**
