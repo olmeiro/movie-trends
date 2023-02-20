@@ -133,18 +133,7 @@ async function getTrendingMovies(query) {
   });
   const movies = data.results;
   createMovies(movies, genericSection, { lazyLoad: true, clean: true });
-
-  // const btnLoadMore = document.createElement('button');
-  // btnLoadMore.innerText = 'Cargar más';
-  // btnLoadMore.setAttribute('id', 'btn-load-more');
-  // btnLoadMore.addEventListener('click', getPaginateTrendingMovies)
-  // genericSection.appendChild(btnLoadMore);
-
-
 }
-
-let page = 1;
-window.addEventListener('scroll', getPaginateTrendingMovies);
 
 async function getPaginateTrendingMovies() {
 
@@ -163,14 +152,6 @@ async function getPaginateTrendingMovies() {
     const movies = data.results;
     createMovies(movies, genericSection, { lazyLoad: true, clean: false });
   }
-
-  //  Cambiamos este boton por el scrolling
-  // const btnLoadMore = document.createElement('button');
-  // btnLoadMore.innerText = 'Cargar más';
-  // btnLoadMore.setAttribute('id', 'btn-load-more');
-
-  // btnLoadMore.addEventListener('click', getPaginateTrendingMovies)
-  // genericSection.appendChild(btnLoadMore);
 }
 
 /**
