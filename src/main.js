@@ -126,12 +126,12 @@ async function getMoviesBySearch(query) {
 }
 
 async function getTrendingMovies(query) {
-  const { data } = await api("trending/movie/day", {
-    params: {
-      query,
-    },
-  });
+  const { data } = await api("trending/movie/day");
   const movies = data.results;
+
+  // console.log(data.total_pages)
+  maxPage = data.total_pages;
+
   createMovies(movies, genericSection, { lazyLoad: true, clean: true });
 }
 
@@ -141,7 +141,9 @@ async function getPaginateTrendingMovies() {
 
   const scrollIsBottom = (scrollTop + clientHeight) >= (scrollHeight - 15);
 
-  if (scrollIsBottom) {
+  const pageIsNotMax = page < maxPage;
+
+  if (scrollIsBottom && pageIsNotMax) {
     page++;
 
     const { data } = await api("trending/movie/day", {
@@ -149,7 +151,9 @@ async function getPaginateTrendingMovies() {
         page,
       },
     });
+
     const movies = data.results;
+
     createMovies(movies, genericSection, { lazyLoad: true, clean: false });
   }
 }
